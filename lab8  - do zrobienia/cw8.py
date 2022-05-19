@@ -102,10 +102,10 @@ def get_w_vectors():
     return v_list
 
 
-def get_clear_vector(val):
+def get_clear_vector(val, n):
     vec = list()
-    for i in range(5):
-        vec.append([0.0, 0.0, 0.0, 0.0, 0.0])
+    for i in range(n):
+        vec.append([0.0 for j in range(n)])
 
     return vec
 
@@ -122,10 +122,11 @@ def threshold_function2(value):
 
 def calculate_x_i_j(i, j, w, u):
     val = 0
-    for a in range(3):
-        for b in range(3):
+    size = 3
+    for a in range(size):
+        for b in range(size):
             try:
-                val += w[a][b] * u[i - (a)][j - (b)]
+                val += w[a][b] + u[i + a][j + b]
             except IndexError:
                 print("ERROR:")
                 print("a: {} b: {} i: {} j: {}".format(a, b, i, j))
@@ -134,10 +135,10 @@ def calculate_x_i_j(i, j, w, u):
 
 
 def convolution(w, u):
-    x_vector = get_clear_vector(0.0)
-
-    for i in range(len(x_vector)):
-        for j in range(len(x_vector[i])):
+    x_vector = get_clear_vector(0.0, 3)
+    size = 3
+    for i in range(size):
+        for j in range(size):
             x_vector[i][j] = threshold_function(calculate_x_i_j(i, j, w, u))
 
     return x_vector
@@ -152,12 +153,12 @@ def calculate_y(x, i, j):
     return val
 
 
-def pooling(x_vector, w, u):
-    # x_vector = get_clear_vector(0.0)
-    #
-    # for i in range(len(x_vector)):
-    #     for j in range(len(x_vector[i])):
-    #         x_vector[i][j] = threshold_function2(calculate_x_i_j(i, j, w, u))
+def pooling( w, u):
+    x_vector = get_clear_vector(0.0)
+
+    for i in range(len(x_vector)):
+        for j in range(len(x_vector[i])):
+            x_vector[i][j] = threshold_function2(calculate_x_i_j(i, j, w, u))
 
     y = [
         [0.0, 0.0],
@@ -184,6 +185,9 @@ if __name__ == '__main__':
             x_vec = convolution(item_w, item_u)
             print("For i = {} j = {} convolution x is: \n".format(i_count, j_count))
             vprint(x_vec)
+            # y_vec = pooling(item_w, item_u)
+            # print("For i = {} j = {} convolution y is: \n".format(i_count, j_count))
+            # vprint(y_vec)
 
             j_count += 1
         i_count += 1
