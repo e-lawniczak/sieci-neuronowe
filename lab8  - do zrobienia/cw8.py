@@ -111,18 +111,24 @@ def get_clear_vector(val, n):
 
 
 def threshold_function(value):
-    if value >= 0:
-        return 1
-    return 0
+    if value <= 0:
+        return 0.0
+    return 1.0
 
 
 def threshold_function2(value):
     return value
 
 
+def threshold_function3(value):
+    if value < 1:
+        return 0.0
+    return 1.0
+
+
 def calculate_x_i_j(i, j, w, u):
     val = 0
-    size = 3
+    size = 5
     for a in range(size):
         for b in range(size):
             try:
@@ -153,8 +159,8 @@ def calculate_y(x, i, j):
     return val
 
 
-def pooling( w, u):
-    x_vector = get_clear_vector(0.0)
+def pooling(w, u):
+    x_vector = get_clear_vector(0.0, 5)
 
     for i in range(len(x_vector)):
         for j in range(len(x_vector[i])):
@@ -167,7 +173,7 @@ def pooling( w, u):
 
     for i in range(2):
         for j in range(2):
-            y[i][j] = threshold_function((1/4**2) * calculate_y(x_vector, i, j))
+            y[i][j] = threshold_function((1 / 4 ** 2) * calculate_y(x_vector, i, j))
 
     return y
 
