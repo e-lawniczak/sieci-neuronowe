@@ -6,6 +6,7 @@ def vprint(vector):
             else:
                 print("-", end="  ")
         print()
+    print()
 
 
 def get_u_vectors():
@@ -128,11 +129,16 @@ def threshold_function3(value):
 
 def calculate_x_i_j(i, j, w, u):
     val = 0
-    size = 5
-    for a in range(size):
-        for b in range(size):
+
+    for a in range(3):
+        for b in range(3):
             try:
-                val += w[a][b] + u[i + a][j + b]
+                val += w[a][b] * u[i - a][j - b]
+                """
+                0:
+                w[0][0] u[0-0][0-0]
+                """
+
             except IndexError:
                 print("ERROR:")
                 print("a: {} b: {} i: {} j: {}".format(a, b, i, j))
@@ -141,10 +147,10 @@ def calculate_x_i_j(i, j, w, u):
 
 
 def convolution(w, u):
-    x_vector = get_clear_vector(0.0, 3)
-    size = 3
-    for i in range(size):
-        for j in range(size):
+    x_vector = get_clear_vector(0.0, 5)
+
+    for i in range(5):
+        for j in range(5):
             x_vector[i][j] = threshold_function(calculate_x_i_j(i, j, w, u))
 
     return x_vector
@@ -173,7 +179,7 @@ def pooling(w, u):
 
     for i in range(2):
         for j in range(2):
-            y[i][j] = threshold_function((1 / 4 ** 2) * calculate_y(x_vector, i, j))
+            y[i][j] = threshold_function3((1 / 4 ** 2) * calculate_y(x_vector, i, j))
 
     return y
 
@@ -190,10 +196,14 @@ if __name__ == '__main__':
         for item_w in w_vec:
             x_vec = convolution(item_w, item_u)
             print("For i = {} j = {} convolution x is: \n".format(i_count, j_count))
+
+            # vprint(item_w)
+            # vprint(item_u)
             vprint(x_vec)
-            # y_vec = pooling(item_w, item_u)
-            # print("For i = {} j = {} convolution y is: \n".format(i_count, j_count))
-            # vprint(y_vec)
+
+            y_vec = pooling(item_w, item_u)
+            print("For i = {} j = {} pooling y is: \n".format(i_count, j_count))
+            vprint(y_vec)
 
             j_count += 1
         i_count += 1
